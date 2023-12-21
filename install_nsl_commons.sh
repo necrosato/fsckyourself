@@ -1,6 +1,7 @@
 #!/bin/sh
 # install necrosato linux common packages and git setup with ssh keys
 
+OSNAME=ubuntu #TODO: dont be dumb
 ARG="$1"
 if [ "$1" = "" ]; then ARG="-e"; fi
 
@@ -57,12 +58,12 @@ setup_tailscale() {
     fi
 }
 
-nsl_setup() {
+setup_nsl() {
     cd $(mktemp -d)
     git clone https://github.com/necrosato/nsl-setup
     cd nsl-setup
-    OSNAME=$UBUNTU
     rsync -aAXv common/ $HOME/
+    rsync -aAXv $OSNAME/ $HOME/
 }
 
 main() {
@@ -71,6 +72,7 @@ main() {
     setup_git
     setup_ssh_keys
     setup_tailscale
+    setup_nsl
 }
 
 main
