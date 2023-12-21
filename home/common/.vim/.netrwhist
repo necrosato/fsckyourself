@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =1
+let g:netrw_dirhist_1='/home/nsato/.bash'
+let g:netrw_dirhist_0='/home/nsato/home-alert/ansible'
+let g:netrw_dirhist_9='/home/nsato/home-alert/ansible/roles/home-alert-node/vars'
+let g:netrw_dirhist_8='/home/nsato/PizzaGPT/src/pizzagpt/utils'
+let g:netrw_dirhist_7='/home/nsato/PizzaGPT/python'
+let g:netrw_dirhist_6='/home/nsato/SHEM/tests/shem/utils/__pycache__'
+let g:netrw_dirhist_5='/home/nsato/SHEM/src/shem'
+let g:netrw_dirhist_4='/home/nsato/.vim/templates/java'
+let g:netrw_dirhist_3='/home/nsato/.vim/templates'
+let g:netrw_dirhist_2='/home/nsato/.vim'

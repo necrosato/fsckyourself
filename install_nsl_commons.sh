@@ -59,8 +59,8 @@ setup_tailscale() {
 
 setup_nsl() {
     cd $(mktemp -d)
-    git clone https://github.com/necrosato/nsl-setup
-    cd nsl-setup
+    git clone https://github.com/necrosato/fsckyourself
+    cd fsckyourself/home/
     rsync -aAXv common/ $HOME/
     rsync -aAXv $OSNAME/ $HOME/
 }
