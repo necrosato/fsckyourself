@@ -2,7 +2,7 @@
 # install necrosato linux common packages and git setup with ssh keys
 
 ARG="$1"
-if [ "$1" -e "" ]; then ARG="-e"; fi
+if [ "$1" = "" ]; then ARG="-e"; fi
 
 set -eux
 
@@ -26,13 +26,13 @@ install_packages() {
     "
     $PRIV_CMD $UPDATE_CMD
     $PRIV_CMD $INSTALL_CMD $MINIMAL
-    if [ "$ARG" -e "-e" ]; then
+    if [ "$ARG" = "-e" ]; then
         $PRIV_CMD $INSTALL_CMD $EXTRAS
     fi
 }
 
 setup_defaults() {
-    if [ "$(which update-alternatives)" -ne "" ]; then
+    if [ "$(which update-alternatives)" != "" ]; then
         sudo update-alternatives --set editor /usr/bin/vim.basic
         sudo update-alternatives --set vi     /usr/bin/vim.basic
     fi
@@ -51,11 +51,26 @@ setup_ssh_keys() {
     rm -rf public-keys
 }
 
+setup_tailscale() {
+    if [ "$(which tailscale)" = "" ]; then
+         curl -fsSL https://tailscale.com/install.sh | sh
+    fi
+}
+
+nsl_setup() {
+    cd $(mktemp -d)
+    git clone https://github.com/necrosato/nsl-setup
+    cd nsl-setup
+    OSNAME=$UBUNTU
+    rsync -aAXv common/ $HOME/
+}
+
 main() {
     install_packages
     setup_defaults
     setup_git
     setup_ssh_keys
+    setup_tailscale
 }
 
 main
