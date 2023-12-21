@@ -21,7 +21,6 @@ install_packages() {
     "
     EXTRAS="
         ansible
-        ansible-playbook
         docker.io
         docker
     "
