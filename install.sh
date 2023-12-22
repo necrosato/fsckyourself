@@ -9,8 +9,8 @@ set -eux
 install_packages() {
     PRIV_CMD="sudo"
     if [ "$(which yum)" != "" ]; then
-        UPDATE_CMD="yum update"
-        INSTALL_CMD="yum install"
+        UPDATE_CMD="yum -y update"
+        INSTALL_CMD="yum -y install"
     elif [ "$(which apt-get)" != "" ]; then
         UPDATE_CMD="apt-get update -y"
         INSTALL_CMD="apt-get install -y"
