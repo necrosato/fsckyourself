@@ -1,7 +1,6 @@
 #!/bin/sh
 # install necrosato linux common packages and git setup with ssh keys
 
-OSNAME=ubuntu #TODO: dont be dumb
 ARG="$1"
 if [ "$1" = "" ]; then ARG="-e"; fi
 
@@ -9,8 +8,13 @@ set -eux
 
 install_packages() {
     PRIV_CMD="sudo"
-    UPDATE_CMD="apt update -y"
-    INSTALL_CMD="apt install -y"
+    if [ "$(which yum)" != "" ]; then
+        UPDATE_CMD="yum update"
+        INSTALL_CMD="yum install"
+    elif [ "$(which apt-get)" != "" ]; then
+        UPDATE_CMD="apt-get update -y"
+        INSTALL_CMD="apt-get install -y"
+    fi
     MINIMAL="
         git
         ranger
@@ -58,11 +62,21 @@ setup_tailscale() {
 }
 
 setup_nsl() {
+    OSNAME=common
+    if [ -e /etc/os-release ]; then
+        OSNAME=$(cat /etc/os-release | grep "^ID=" | awk -F= '{print $2}')
+    fi
     cd $(mktemp -d)
     git clone https://github.com/necrosato/fsckyourself
     cd fsckyourself/home/
     rsync -aAXv common/ $HOME/
-    rsync -aAXv $OSNAME/ $HOME/
+    if [ -d $OSNAME ]; then
+        rsync -aAXv $OSNAME/ $HOME/
+    fi
+    HOSTNAME_LOWER=$(hostname | awk '{print tolower($0)}')
+    if [ -d $HOSTNAME_LOWER ]; then
+        rsync -aAXv $HOSTNAME_LOWER/ $HOME/
+    fi
 }
 
 main() {
