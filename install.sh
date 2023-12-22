@@ -1,16 +1,15 @@
 #!/bin/sh
 # install necrosato linux common packages and git setup with ssh keys
 
-ARG="$1"
-if [ "$1" = "" ]; then ARG="-e"; fi
-
 set -eux
+
+GITHUB_USER="necrosato"
+GITHUB_EMAIL="necrosato@live.com"
 
 install_packages() {
     PRIV_CMD="sudo"
     MINIMAL="
         git
-        ranger
         rsync
         tig
         tmux
@@ -18,10 +17,11 @@ install_packages() {
     "
     EXTRAS="
         ansible
-        docker.io
         docker
     "
     APT_ONLY="
+        ranger
+        docker.io
     "
     YUM_ONLY="
     "
@@ -37,9 +37,7 @@ install_packages() {
 
     $PRIV_CMD $UPDATE_CMD
     $PRIV_CMD $INSTALL_CMD $ONLY $MINIMAL
-    if [ "$ARG" = "-e" ]; then
-        $PRIV_CMD $INSTALL_CMD $EXTRAS
-    fi
+    $PRIV_CMD $INSTALL_CMD $EXTRAS
 }
 
 setup_defaults() {
@@ -53,13 +51,13 @@ setup_defaults() {
 }
 
 setup_git() {
-    git config --global user.name  "necrosato"
-    git config --global user.email "necrosato@live.com"
+    git config --global user.name  "$GITHUB_USER"
+    git config --global user.email "$GITHUB_EMAIL"
 }
 
 setup_ssh_keys() {
     cd $(mktemp -d)
-    git clone https://github.com/necrosato/public-keys
+    git clone https://github.com/$GITHUB_USER/public-keys
     mkdir -p $HOME/.ssh
     cat public-keys/.ssh/authorized_keys >> $HOME/.ssh/authorized_keys
     rm -rf public-keys
@@ -79,16 +77,20 @@ osname() {
 
 setup_homedir() {
     cd $(mktemp -d)
-    git clone https://github.com/necrosato/fsckyourself
+    git clone https://github.com/$GITHUB_USER/fsckyourself
     SRC=fsckyourself/home/
     OSDIR="./$SRC/$(osname)"
     HOSTDIR="$SRC/$(hostname | awk '{print tolower($0)}')"
+    USERDIR="$SRC/$USER"
     rsync -aAXv $SRC/common/ $HOME/
     if [ -d $OSDIR ]; then
         rsync -aAXv $OSDIR/ $HOME/
     fi
     if [ -d $HOSTDIR ]; then
         rsync -aAXv $HOSTDIR/ $HOME/
+    fi
+    if [ -d $USERDIR ]; then
+        rsync -aAXv $USERDIR/ $HOME/
     fi
 }
 
