@@ -72,11 +72,9 @@ setup_tailscale() {
 }
 
 osname() {
-    OSNAME=common
     if [ -e /etc/os-release ]; then
-        OSNAME=$(cat /etc/os-release | grep "^ID=" | awk -F= '{print $2}')
+        echo $(cat /etc/os-release | grep "^ID=" | awk -F= '{print $2}')
     fi
-    echo $OSNAME
 }
 
 setup_homedir() {
@@ -86,7 +84,7 @@ setup_homedir() {
     OSDIR="./$SRC/$(osname)"
     HOSTDIR="$SRC/$(hostname | awk '{print tolower($0)}')"
     rsync -aAXv $SRC/common/ $HOME/
-    if [ -d $OSNAME ]; then
+    if [ -d $OSDIR ]; then
         rsync -aAXv $OSDIR/ $HOME/
     fi
     if [ -d $HOSTDIR ]; then
