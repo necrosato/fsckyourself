@@ -8,13 +8,6 @@ set -eux
 
 install_packages() {
     PRIV_CMD="sudo"
-    if [ "$(which yum)" != "" ]; then
-        UPDATE_CMD="yum -y update"
-        INSTALL_CMD="yum -y install"
-    elif [ "$(which apt-get)" != "" ]; then
-        UPDATE_CMD="apt-get update -y"
-        INSTALL_CMD="apt-get install -y"
-    fi
     MINIMAL="
         git
         ranger
@@ -28,17 +21,35 @@ install_packages() {
         docker.io
         docker
     "
+    APT_ONLY="
+    "
+    YUM_ONLY="
+        vim-default-editor
+    "
+    if [ "$(which apt-get)" != "" ]; then
+        UPDATE_CMD="apt-get update -y"
+        INSTALL_CMD="apt-get install -y"
+        ONLY=$APT_ONLY
+    elif [ "$(which yum)" != "" ]; then
+        UPDATE_CMD="yum -y update"
+        INSTALL_CMD="yum -y install"
+        ONLY=$YUM_ONLY
+    fi
+
     $PRIV_CMD $UPDATE_CMD
-    $PRIV_CMD $INSTALL_CMD $MINIMAL
+    $PRIV_CMD $INSTALL_CMD $ONLY $MINIMAL
     if [ "$ARG" = "-e" ]; then
         $PRIV_CMD $INSTALL_CMD $EXTRAS
     fi
 }
 
 setup_defaults() {
-    if [ "$(which update-alternatives)" != "" ]; then
-        sudo update-alternatives --set editor /usr/bin/vim.basic
-        sudo update-alternatives --set vi     /usr/bin/vim.basic
+    if [ -e /etc/os-release ]; then
+        OSBASE=$(cat /etc/os-release | grep "^ID_LIKE=" | awk -F= '{print $2}')
+        if [ "$ID_LIKE" = "debian" ]; then
+            sudo update-alternatives --set editor /usr/bin/vim.basic
+            sudo update-alternatives --set vi     /usr/bin/vim.basic
+        fi
     fi
 }
 
@@ -61,11 +72,15 @@ setup_tailscale() {
     fi
 }
 
-setup_nsl() {
+osname() {
     OSNAME=common
     if [ -e /etc/os-release ]; then
         OSNAME=$(cat /etc/os-release | grep "^ID=" | awk -F= '{print $2}')
     fi
+}
+
+setup_nsl() {
+    OSNAME=$(osname)
     cd $(mktemp -d)
     git clone https://github.com/necrosato/fsckyourself
     cd fsckyourself/home/
