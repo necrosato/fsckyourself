@@ -24,7 +24,6 @@ install_packages() {
     APT_ONLY="
     "
     YUM_ONLY="
-        vim-default-editor
     "
     if [ "$(which apt-get)" != "" ]; then
         UPDATE_CMD="apt-get update -y"
@@ -46,7 +45,7 @@ install_packages() {
 setup_defaults() {
     if [ -e /etc/os-release ]; then
         OSBASE=$(cat /etc/os-release | grep "^ID_LIKE=" | awk -F= '{print $2}')
-        if [ "$ID_LIKE" = "debian" ]; then
+        if [ "$OSBASE" = "debian" ]; then
             sudo update-alternatives --set editor /usr/bin/vim.basic
             sudo update-alternatives --set vi     /usr/bin/vim.basic
         fi
