@@ -76,8 +76,9 @@ osname() {
     if [ -e /etc/os-release ]; then
         OSNAME=$(cat /etc/os-release | grep "^ID=" | awk -F= '{print $2}')
     fi
+    echo $OSNAME
 }
-ID_LIKi
+
 setup_homedir() {
     cd $(mktemp -d)
     git clone https://github.com/necrosato/fsckyourself
