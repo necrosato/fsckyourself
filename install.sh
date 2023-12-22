@@ -77,19 +77,19 @@ osname() {
         OSNAME=$(cat /etc/os-release | grep "^ID=" | awk -F= '{print $2}')
     fi
 }
-
-setup_nsl() {
-    OSNAME=$(osname)
+ID_LIKi
+setup_homedir() {
     cd $(mktemp -d)
     git clone https://github.com/necrosato/fsckyourself
-    cd fsckyourself/home/
-    rsync -aAXv common/ $HOME/
+    SRC=fsckyourself/home/
+    OSDIR="./$SRC/$(osname)"
+    HOSTDIR="$SRC/$(hostname | awk '{print tolower($0)}')"
+    rsync -aAXv $SRC/common/ $HOME/
     if [ -d $OSNAME ]; then
-        rsync -aAXv $OSNAME/ $HOME/
+        rsync -aAXv $OSDIR/ $HOME/
     fi
-    HOSTNAME_LOWER=$(hostname | awk '{print tolower($0)}')
-    if [ -d $HOSTNAME_LOWER ]; then
-        rsync -aAXv $HOSTNAME_LOWER/ $HOME/
+    if [ -d $HOSTDIR ]; then
+        rsync -aAXv $HOSTDIR/ $HOME/
     fi
 }
 
@@ -99,7 +99,7 @@ main() {
     setup_git
     setup_ssh_keys
     setup_tailscale
-    setup_nsl
+    setup_homedir
 }
 
 main
