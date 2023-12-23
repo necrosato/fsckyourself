@@ -123,4 +123,3 @@ fi
 
 export VISUAL=vim
 export EDITOR=$VISUAL
-alias pubip='curl https://ipecho.net/plain'
