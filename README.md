@@ -1,3 +1,3 @@
 # fsckyourself
 ## Install
-curl https://fsckyourself.com/install.sh | sh
+`curl https://www.fsckyourself.com/install.sh | sh`
